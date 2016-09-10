@@ -1,0 +1,14 @@
+grid world
+dynamical system
+
+reinforcement learning
+imitation learning
+
+reflex
+planning
+exact
+
+correlates of values
+
+anytime planning
+non-recurrent planning

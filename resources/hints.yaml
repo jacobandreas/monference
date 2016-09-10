@@ -1,0 +1,17 @@
+#"get[clay]":
+#  ["get[clay]"]
+
+"get[wood]":
+  ["get[wood]"]
+
+#"make[plank]":
+#  ["make[plank]"]
+
+#"get[stone]":
+#  ["get[stone]"]
+
+"make[plank]":
+  ["get[wood]", "make[plank]"]
+
+#"make[fence]":
+#  ["get[wood]", "get[wood]", "make[plank]", "make[fence]"]
