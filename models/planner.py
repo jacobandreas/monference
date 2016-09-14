@@ -6,7 +6,6 @@ import tensorflow as tf
 N_BATCH = 100
 
 N_HIDDEN = 256
-THINK_TIME = 10
 
 DISCOUNT = 0.9
 MAX_EXPERIENCES = 50000
@@ -16,6 +15,7 @@ class PlannerModel(object):
         self.experiences = []
         self.demonstrations = []
         self.world = None
+        self.config = config.model
 
     def prepare(self, world):
         assert self.world is None
@@ -33,7 +33,7 @@ class PlannerModel(object):
                 #cell = tf.nn.rnn_cell.GRUCell(N_HIDDEN)
 
                 # TODO input projection
-                _, t_plan = tf.nn.rnn(cell, [t_init_feats] * THINK_TIME, 
+                _, t_plan = tf.nn.rnn(cell, [t_init_feats] * self.config.depth, 
                         dtype=tf.float32, scope=vs)
                 t_plan = t_plan.h
 
@@ -102,10 +102,19 @@ class PlannerModel(object):
 
     def demonstrate(self, episode):
         self.demonstrations.append(episode)
-        self.demonstrations = self.demonstrations[-MAX_EXPERIENCES:]
+        #self.demonstrations = self.demonstrations[-MAX_EXPERIENCES:]
+
+        transition_count = 0
+        episode_count = 0
+        for demonstration in reversed(self.demonstrations):
+            transition_count += len(demonstration)
+            episode_count += 1
+            if transition_count > MAX_EXPERIENCES:
+                break
+        self.demonstrations = self.demonstrations[-episode_count:]
 
     def act(self, state, randomize=True):
-        eps = max(1. - self.step_count / 500000., 0.1)
+        eps = max(1. - self.step_count / 100000., 0.1)
         if randomize and np.random.random() < eps:
             action = np.random.randint(self.world.n_actions)
         else:

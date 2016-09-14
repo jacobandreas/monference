@@ -4,23 +4,23 @@ base experiments
       imitation
         *reflex1
         *reflex2
-        reflex4
-        think4
-        think8
+        *reflex4
+        *think4
+        *think8
       reinforcement
-        reflex1
-        reflex2
-        reflex4
-        think4
+        *reflex1
+        *reflex2
+        *reflex4
+        *think4
         think8
 
     8x8
       imitation
-        reflex1
+        *reflex1
         *reflex2
-        reflex4
-        think4
-        think8
+        *reflex4
+        *think4
+        *think8
       reinforcement
         reflex1
         reflex2
