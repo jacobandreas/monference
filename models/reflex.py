@@ -46,9 +46,17 @@ class ReflexModel(object):
         t_assign_rl_ops = [w_n.assign(w) for (w, w_n) in zip(v, v_n)]
 
         # im
-        t_actions = tf.placeholder(tf.int32, shape=[None])
-        t_err_im = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(t_scores,
-                t_actions))
+        if self.config.continuous:
+            t_actions = tf.placeholder(tf.float32 , shape=[None, world.n_actions])
+        else:
+            t_actions = tf.placeholder(tf.float32 if self.config.continuous else tf.int32, shape=[None])
+        if self.config.continuous:
+            t_err_im = tf.reduce_mean(
+                    tf.square(t_scores - t_actions))
+        else:
+            t_err_im = tf.reduce_mean(
+                    tf.nn.sparse_softmax_cross_entropy_with_logits(t_scores,
+                        t_actions))
         t_train_im_op = opt.minimize(t_err_im, var_list=v)
 
         self.session = tf.Session()
@@ -82,15 +90,17 @@ class ReflexModel(object):
 
     def act(self, state, randomize=True):
         eps = max(1. - self.step_count / 100000., 0.1)
-        if randomize and np.random.random() < eps:
+        if randomize and np.random.random() < eps and not self.config.continuous:
             action = np.random.randint(self.n_actions)
         else:
             preds = self.session.run([self.t_scores], 
                     feed_dict={
                         self.t_feats: [state.features()],
                     })[0][0, :]
-            action = np.argmax(preds)
-
+            if self.config.continuous:
+                action = preds
+            else:
+                action = np.argmax(preds)
         return action
 
     def train_rl(self):

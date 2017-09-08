@@ -1,8 +1,14 @@
 world: 
-  name: LatticeWorld
-  size: 4
+  name: MazeWorld
+  size: 7
 model: 
-  name: PlannerModel
+#  name: PlannerModel
+#  depth: 8
+#  pre_project: false
+#  continuous: true
+  name: ReflexModel
   depth: 8
+  pre_project: false
+  continuous: true
 trainer: 
-  name: ReinforcementTrainer
+  name: ImitationTrainer

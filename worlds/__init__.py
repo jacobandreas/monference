@@ -1,4 +1,5 @@
 from lattice import LatticeWorld
+from maze import MazeWorld
 
 def load(config):
     cls_name = config.world.name
